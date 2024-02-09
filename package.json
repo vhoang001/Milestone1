@@ -1,0 +1,12 @@
+{
+  "name": "milestone1",
+  "version": "1.0.0",
+  "description": "Memory Card Game",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
