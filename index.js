@@ -1,5 +1,5 @@
-var errors = 0;                                      //set error=0
-var cardlist = [                                     //add card list
+var errors = 0;                                                   //set error=0
+var cardlist = [                                                  //add card list
     "boo",
     "bowser-jr",
     "bowser",
@@ -17,26 +17,26 @@ var cardlist = [                                     //add card list
 ]
 
 var cardSet;
-var board = [];                                    //show outline of the card placement
+var board = [];                                                 //show outline of the card placement
 var rows = 4;
 var columns = 7;
 
-var card1Selected;                                  //add card selected
+var card1Selected;                                              //add card selected
 var card2Selected;
 
-var matchesFound = 0; // Initialize the matches found counter
+var matchesFound = 0;                                           // Initialize the matches found counter
 
-window.onload = function() {                       //add functions to the game
+window.onload = function() {                                    //add functions to the game
     shuffleCards();
     startGame();
 }
 
 function shuffleCards(){                            
-    cardSet = cardlist.concat(cardlist);            //two of each card
+    cardSet = cardlist.concat(cardlist);                        //two of each card
     console.log(cardSet);
-    for (let i = 0; i < cardSet.length; i++) {      //shuffle the card
-        let j = Math.floor(Math.random() * cardSet.length); //get random index
-        let temp = cardSet[i];                      //swap card
+    for (let i = 0; i < cardSet.length; i++) {                  //shuffle the card
+        let j = Math.floor(Math.random() * cardSet.length);     //get random index
+        let temp = cardSet[i];                                  //swap card
         cardSet[i] = cardSet[j];
         cardSet[j] = temp;
     }
@@ -44,27 +44,44 @@ function shuffleCards(){
 }
 
 function startGame(){
-    for (let r = 0; r < rows; r++) {                //arange board 4x7
+    for (let r = 0; r < rows; r++) {
         let row = [];
         for (let c = 0; c < columns; c++) {
             let cardImg = cardSet.pop();
-            row.push(cardImg);                     //for JS use
+            row.push(cardImg);
 
-            //<img id="0-0" class="card" src="boo.png">
-            let card = document.createElement("img");
-            card.id = r.toString() + "-" + c.toString();
-            card.src = "/assets/" + cardImg + ".png";
+            let cardContainer = document.createElement("div");// Create card container
+            cardContainer.classList.add("card-container");
+            
+            let card = document.createElement("div");       // Create card flipper
             card.classList.add("card");
-            card.addEventListener("click",selectCard);      //click to select card
-            document.getElementById("board").append(card);
+
+            let cardBack = document.createElement("img");   // Create card back (character image)
+            cardBack.src = "/assets/" + cardImg + ".png";
+            cardBack.classList.add("card-back");
+
+            let cardFront = document.createElement("img");  // Create card front (back image)
+            cardFront.src = "assets/9b43a5b6e04365158bf4f6765f9b3ee7.jpg";
+            cardFront.classList.add("card-front");
+            
+            card.appendChild(cardBack);                     // Append front and back to card
+            card.appendChild(cardFront);
+
+            cardContainer.appendChild(card);                // Append card to container, and container to board
+            document.getElementById("board").appendChild(cardContainer);
+
+            cardContainer.addEventListener("click", function() {// Add click listener to the container
+                card.classList.toggle("is-flipped");
+                selectCard.call(card, cardImg);             // Adjust selectCard to work with this
+            });
         }
         board.push(row);
-    }
+    }  
     console.log(board);
-    setTimeout(hideCards, 1000);
+    setTimeout(hideCards, 1000);  
 }
 
-function hideCards() {                              //function to flip card
+function hideCards() {                                       //function to flip card
     for (let r = 0; r < rows; r++){
         for (let c = 0; c < columns; c++) {
             let card = document.getElementById(r.toString() + "-" + c.toString());
@@ -78,7 +95,7 @@ function selectCard(){
         if(!card1Selected) {
             card1Selected = this;
 
-            let coords = card1Selected.id.split("-"); //"0-1" -> ["0"-"1"]
+            let coords = card1Selected.id.split("-");           //"0-1" -> ["0"-"1"]
             let r = parseInt(coords[0]);
             let c = parseInt(coords[1]);
 
@@ -87,31 +104,31 @@ function selectCard(){
         else if (!card2Selected && this != card1Selected){
             card2Selected = this;
 
-            let coords = card2Selected.id.split("-"); //"0-1" -> ["0"-"1"]
+            let coords = card2Selected.id.split("-");           //"0-1" -> ["0"-"1"]
             let r = parseInt(coords[0]);
             let c = parseInt(coords[1]);
 
             card2Selected.src = "/assets/" + board[r][c] + ".png";   
-            setTimeout(update, 1000);                //update to new cards after clicking by 1000s
+            setTimeout(update, 1000);                           //update to new cards after clicking by 1000s
         }
     }
 }
 
 function update() {
-    if (card1Selected.src === card2Selected.src) {  // If cards are the same, it's a match
-        matchesFound += 1;                          // Increase the count of matches found
-        playClapSound();                            // Play clap sound
-        if (matchesFound === 14) {                  // Check if all matches are found
-            setTimeout(declareWinner, 100);         // Call declareWinner function after a short delay
+    if (card1Selected.src === card2Selected.src) {              // If cards are the same, it's a match
+        matchesFound += 1;                                      // Increase the count of matches found
+        playClapSound();                                        // Play clap sound
+        if (matchesFound === 14) {                              // Check if all matches are found
+            setTimeout(declareWinner, 100);                     // Call declareWinner function after a short delay
         }
-    } else {                                        // If cards not the same, flip both back
+    } else {                                                    // If cards not the same, flip both back
         card1Selected.src = "assets/9b43a5b6e04365158bf4f6765f9b3ee7.jpg";
         card2Selected.src = "assets/9b43a5b6e04365158bf4f6765f9b3ee7.jpg";
         errors += 1;
         document.getElementById("errors").innerText = errors;
 
-        if (errors >= 10) {                        // Check if errors have reached 10
-            gameOver();                            // Call gameOver function
+        if (errors >= 10) {                                     // Check if errors have reached 10
+            gameOver();                                         // Call gameOver function
         }
     }
 
@@ -120,23 +137,23 @@ function update() {
 }
 
 function declareWinner() {
-    if (errors < 10) {                              // Checks if the player won without exceeding the error limit
-        alert("Super Winner! You matched all pairs successfully.");
+    if (errors < 10) {                                          // Checks if the player won without exceeding the error limit
+        alert("You Are Super Winner");
     }
 }
 
 function gameOver() {
     alert("Mario Kart Restart");
-    window.location.reload();                       // Reloads the page to restart the game
+    window.location.reload();                                   // Reloads the page to restart the game
 }
 
 function playClapSound() {
     var clapSound = document.getElementById('clapSound');
-    clapSound.currentTime = 0;                      // Reset the audio file to its beginning if it was already played before
-    clapSound.play();                               // Start playing the sound
+    clapSound.currentTime = 0;                                 // Reset the audio file to its beginning if it was already played before
+    clapSound.play();                                          // Start playing the sound
 
     setTimeout(function() {
-        clapSound.pause();                          // Stop playing the sound after 1 second
-        clapSound.currentTime = 0;                  // Optionally reset the sound to start for the next play
-    }, 2000);                                       // 2000 milliseconds = 2 second
+        clapSound.pause();                                     // Stop playing the sound after 1 second
+        clapSound.currentTime = 0;                             // Optionally reset the sound to start for the next play
+    }, 2000);                                                  // 2000 milliseconds = 2 second
 }
