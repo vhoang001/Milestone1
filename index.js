@@ -131,7 +131,6 @@ function update() {
             gameOver();                                         // Call gameOver function
         }
     }
-
     card1Selected = null;
     card2Selected = null;
 }
@@ -157,3 +156,4 @@ function playClapSound() {
         clapSound.currentTime = 0;                             // Optionally reset the sound to start for the next play
     }, 2000);                                                  // 2000 milliseconds = 2 second
 }
+
